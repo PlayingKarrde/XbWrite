@@ -1,0 +1,12 @@
+[package]
+name = "xbwrite-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "xbwrite-cli"
+path = "src/main.rs"
+
+[dependencies]
+xbwrite-core = { path = "../xbwrite-core" }

@@ -1,0 +1,13 @@
+[package]
+name = "xbwrite-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+xdvdfs = { path = "../../xdvdfs/xdvdfs-core", default-features = false, features = ["std", "read", "write", "sync", "ciso_support"] }
+ciso = { version = "0.3.0", default-features = false, features = ["sync"] }
+thiserror = "2"
+
+[dev-dependencies]
+tempfile = "3"

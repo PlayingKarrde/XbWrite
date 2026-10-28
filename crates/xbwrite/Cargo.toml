@@ -1,0 +1,20 @@
+[package]
+name = "xbwrite"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "xbwrite"
+path = "src/main.rs"
+
+[dependencies]
+xbwrite-core = { path = "../xbwrite-core" }
+eframe = { version = "0.36", features = ["persistence"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
+rfd = "0.17"
+serde = { version = "1", features = ["derive"] }
+
+[build-dependencies]
+image = { version = "0.25", default-features = false, features = ["ico", "png"] }
+winresource = "0.1"

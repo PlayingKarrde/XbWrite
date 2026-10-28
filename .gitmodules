@@ -1,0 +1,3 @@
+[submodule "xdvdfs"]
+	path = xdvdfs
+	url = https://github.com/antangelo/xdvdfs

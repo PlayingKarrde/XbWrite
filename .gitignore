@@ -1,0 +1,4 @@
+/target
+/output
+*.part
+*.part[0-9]*
