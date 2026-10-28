@@ -41,6 +41,10 @@ impl<F: FilesystemHierarchy> FilesystemHierarchy for TrimFs<'_, F> {
         if self.skip_system_update && path.is_root() {
             entries.retain(|e| !is_system_update(&e.name));
         }
+        // Folders list in whatever order the host file system keeps (sorted on NTFS, not on most
+        // Linux file systems), and file data is laid out in this order. Sorting makes the image
+        // the same whatever it is built from.
+        entries.sort_by_cached_key(|e| e.name.to_ascii_uppercase());
         Ok(entries)
     }
 
