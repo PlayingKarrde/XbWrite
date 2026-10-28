@@ -1,0 +1,56 @@
+# Builds and tests XbWrite on Windows, Linux and macOS for every push and pull request.
+# Releases are built by release.yml when a v* tag is pushed.
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-22.04, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # xdvdfs is a submodule; its core crate is a path dependency.
+          submodules: true
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libwayland-dev libx11-dev libxcb-render0-dev \
+            libxcb-shape0-dev libxcb-xfixes0-dev
+
+      # Only our crates: the xdvdfs checkout has its own formatting.
+      - name: Format
+        if: runner.os == 'Linux'
+        run: cargo fmt -p xbwrite-core -p xbwrite -p xbwrite-cli -- --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test --workspace
+
+      - name: Build
+        run: cargo build --workspace --release
